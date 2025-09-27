@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { ServiceCard } from "@/components/ServiceCard";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { MapView } from "@/components/MapView";
+import { Header } from "@/components/Header";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { MapPin, Filter, SlidersHorizontal } from "lucide-react";
+import { MapPin, Filter, SlidersHorizontal, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 import heroImage from "@/assets/hero-services.jpg";
 
 // Mock data for demonstration
@@ -49,11 +51,14 @@ const mockServices = [
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
+      <Header onMenuClick={() => setSidebarOpen(true)} />
+      
       {/* Hero Section */}
-      <section className="relative h-96 overflow-hidden">
+      <section className="relative h-80 overflow-hidden">
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroImage})` }}
@@ -90,12 +95,53 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <div className="fixed left-0 top-0 h-full w-80 bg-background border-r border-border shadow-xl">
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="p-4 space-y-6 overflow-y-auto">
+              <div className="bg-gradient-card rounded-2xl p-6 shadow-card border border-border/50">
+                <CategoryFilter 
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
+                />
+              </div>
+              
+              <div className="bg-gradient-card rounded-2xl p-6 shadow-card border border-border/50">
+                <h3 className="font-semibold text-lg text-foreground mb-4">Filters</h3>
+                <div className="space-y-4">
+                  <Button variant="outline" className="w-full justify-start">
+                    <SlidersHorizontal className="h-4 w-4 mr-2" />
+                    Distance
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Rating
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start">
+                    <Filter className="h-4 w-4 mr-2" />
+                    Price Range
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Dashboard */}
       <section className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Filters Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6 space-y-6">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-24 space-y-6">
               <div className="bg-gradient-card rounded-2xl p-6 shadow-card border border-border/50">
                 <CategoryFilter 
                   selectedCategory={selectedCategory}
@@ -129,9 +175,20 @@ const Index = () => {
               {/* Services List */}
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-foreground">
-                    Nearby Services
-                  </h2>
+                  <div className="flex items-center gap-4">
+                    <h2 className="text-2xl font-bold text-foreground">
+                      Nearby Services
+                    </h2>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="lg:hidden"
+                      onClick={() => setSidebarOpen(true)}
+                    >
+                      <Filter className="h-4 w-4 mr-2" />
+                      Filters
+                    </Button>
+                  </div>
                   <Badge variant="outline" className="bg-background">
                     {mockServices.length} results
                   </Badge>
