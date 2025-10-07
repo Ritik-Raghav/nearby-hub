@@ -8,6 +8,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json', // default; will override for FormData
   },
+  withCredentials: true,
 });
 
 // Request interceptor to add auth token if available
