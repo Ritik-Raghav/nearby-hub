@@ -1,29 +1,30 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Wrench, 
-  GraduationCap, 
-  Zap, 
-  Paintbrush, 
-  Car, 
-  Scissors, 
+import {
+  Wrench,
+  GraduationCap,
+  Zap,
+  Paintbrush,
+  Car,
+  Scissors,
   Stethoscope,
   Home,
   ChefHat,
-  Camera
+  Camera,
 } from "lucide-react";
 
-const categories = [
-  { id: "all", name: "All Services", icon: Home, count: 1247 },
-  { id: "plumbers", name: "Plumbers", icon: Wrench, count: 156 },
-  { id: "tuitions", name: "Tuitions", icon: GraduationCap, count: 298 },
-  { id: "electricians", name: "Electricians", icon: Zap, count: 89 },
-  { id: "painters", name: "Painters", icon: Paintbrush, count: 67 },
-  { id: "mechanics", name: "Mechanics", icon: Car, count: 134 },
-  { id: "salon", name: "Salons", icon: Scissors, count: 78 },
-  { id: "doctors", name: "Doctors", icon: Stethoscope, count: 203 },
-  { id: "catering", name: "Catering", icon: ChefHat, count: 45 },
-  { id: "photography", name: "Photography", icon: Camera, count: 34 },
+const baseCategories = [
+  { id: "all", name: "All Services", icon: Home },
+  { id: "plumber", name: "Plumbers", icon: Wrench },
+  { id: "tuition", name: "Tuitions", icon: GraduationCap },
+  { id: "electrician", name: "Electricians", icon: Zap },
+  { id: "painter", name: "Painters", icon: Paintbrush },
+  { id: "mechanic", name: "Mechanics", icon: Car },
+  { id: "salon", name: "Salons", icon: Scissors },
+  { id: "doctor", name: "Doctors", icon: Stethoscope },
+  { id: "catering", name: "Catering", icon: ChefHat },
+  { id: "photography", name: "Photography", icon: Camera },
 ];
 
 interface CategoryFilterProps {
@@ -31,7 +32,51 @@ interface CategoryFilterProps {
   onCategoryChange: (category: string) => void;
 }
 
-export const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryFilterProps) => {
+export const CategoryFilter = ({
+  selectedCategory,
+  onCategoryChange,
+}: CategoryFilterProps) => {
+  const [categories, setCategories] = useState(baseCategories);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const baseUrl = import.meta.env.VITE_API_URL;
+        const res = await fetch(`${baseUrl}/user/get-category-counts`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          const counts = data.data || [];
+
+          setCategories((prev) =>
+            prev.map((cat) => {
+              if (cat.id === "all") {
+                const total = counts.reduce((sum, c) => sum + c.count, 0);
+                return { ...cat, count: total };
+              }
+
+              const found = counts.find(
+                (c) => c.category?.toLowerCase() === cat.id.toLowerCase()
+              );
+              return { ...cat, count: found ? found.count : 0 };
+            })
+          );
+        }
+      } catch (err) {
+        console.error("Error fetching category counts:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCounts();
+  }, []);
+
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-lg text-foreground">Categories</h3>
@@ -39,15 +84,15 @@ export const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryF
         {categories.map((category) => {
           const Icon = category.icon;
           const isSelected = selectedCategory === category.id;
-          
+
           return (
             <Button
               key={category.id}
               variant={isSelected ? "default" : "ghost"}
-              className={`w-full justify-between h-auto p-3 ${
-                isSelected 
-                  ? "bg-gradient-primary text-primary-foreground shadow-glow" 
-                  : "hover:bg-muted/50"
+              className={`w-full justify-between h-auto p-3 transition-colors duration-200 ${
+                isSelected
+                  ? "bg-gradient-primary text-primary-foreground shadow-glow"
+                  : "hover:bg-muted/50 hover:text-foreground"
               }`}
               onClick={() => onCategoryChange(category.id)}
             >
@@ -55,11 +100,11 @@ export const CategoryFilter = ({ selectedCategory, onCategoryChange }: CategoryF
                 <Icon className="h-5 w-5" />
                 <span className="font-medium">{category.name}</span>
               </div>
-              <Badge 
-                variant={isSelected ? "secondary" : "outline"} 
+              <Badge
+                variant={isSelected ? "secondary" : "outline"}
                 className="text-xs"
               >
-                {category.count}
+                {loading ? "..." : category.count ?? 0}
               </Badge>
             </Button>
           );

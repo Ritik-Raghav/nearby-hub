@@ -1,45 +1,127 @@
-import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { MapPin, Navigation } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import api from "@/services/api";
+import { Card } from "@/components/ui/card";
+import { GoogleMap, LoadScript, Marker, OverlayView } from "@react-google-maps/api";
 
-// Placeholder component for Google Maps integration
-// You'll need to add Google Maps API key and implement actual map functionality
+export const MapView = ({ providers = [], userLocation = null }) => {
+  const mapRef = useRef(null);
+  const [currentUserLocation, setCurrentUserLocation] = useState(null);
 
-export const MapView = () => {
+  const defaultCenter = { lat: 28.6139, lng: 77.209 }; // Delhi
+  const mapContainerStyle = { width: "100%", height: "100%" };
+
+  // ✅ Center the map to a location
+  const centerMap = (loc) => {
+    if (mapRef.current && loc?.lat && loc?.lng) {
+      mapRef.current.panTo(loc);
+      mapRef.current.setZoom(14);
+    }
+  };
+
+  // ✅ Fetch saved user location on mount
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const { data } = await api.get(
+          `${import.meta.env.VITE_API_URL}/user/get-user-location`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const loc = data?.location || data;
+        if (loc?.lat && loc?.lng) {
+          setCurrentUserLocation(loc);
+          centerMap(loc);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user location:", error);
+      }
+    };
+    fetchUserLocation();
+  }, []);
+
+  // ✅ Update map when `userLocation` prop changes
+  useEffect(() => {
+    if (userLocation) {
+      setCurrentUserLocation(userLocation);
+      centerMap(userLocation);
+    }
+  }, [userLocation]);
+
+  // ✅ Recenter map when providers change (to first provider)
+  useEffect(() => {
+    if (providers.length > 0) {
+      const firstProvider = providers[0];
+      const providerLoc = firstProvider.location?.coordinates
+        ? { lat: firstProvider.location.coordinates[1], lng: firstProvider.location.coordinates[0] }
+        : { lat: firstProvider.lat, lng: firstProvider.lng };
+
+      centerMap(providerLoc);
+    }
+  }, [providers]);
+
   return (
     <Card className="relative h-full overflow-hidden rounded-2xl shadow-card border-border/50">
-      <div className="absolute inset-0 bg-gradient-to-br from-muted/20 to-muted/40 flex items-center justify-center">
-        <div className="text-center space-y-4 p-8">
-          <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-full flex items-center justify-center shadow-glow">
-            <MapPin className="h-8 w-8 text-primary-foreground" />
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-xl font-semibold text-foreground">Interactive Map</h3>
-            <p className="text-muted-foreground max-w-sm">
-              Google Maps integration will be displayed here. Add your Google Maps API key to enable the interactive map view.
-            </p>
-          </div>
-          <Button className="bg-gradient-primary text-primary-foreground hover:shadow-glow transition-all duration-300">
-            <Navigation className="h-4 w-4 mr-2" />
-            Setup Google Maps
-          </Button>
-        </div>
-      </div>
-      
-      {/* Mock map controls */}
-      <div className="absolute top-4 right-4 space-y-2">
-        <Button size="icon" variant="outline" className="bg-background/90 backdrop-blur-sm">
-          +
-        </Button>
-        <Button size="icon" variant="outline" className="bg-background/90 backdrop-blur-sm">
-          -
-        </Button>
-      </div>
-      
-      <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-2 text-sm text-muted-foreground">
-        Ready for Google Maps API
-      </div>
+      <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={currentUserLocation || (providers[0]?.location?.coordinates
+            ? { lat: providers[0].location.coordinates[1], lng: providers[0].location.coordinates[0] }
+            : defaultCenter)}
+          zoom={currentUserLocation ? 14 : 12}
+          onLoad={(map) => (mapRef.current = map)}
+        >
+          {/* Provider markers */}
+          {providers.map((p, i) => (
+            <OverlayView
+              key={i}
+              position={{
+                lat: p.location?.coordinates?.[1] || p.lat,
+                lng: p.location?.coordinates?.[0] || p.lng,
+              }}
+              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+            >
+              <div className="flex flex-col items-center">
+                <img
+                  src={
+                    p.profileImage
+                      ? `${import.meta.env.VITE_IMG_API_URL}${p.profileImage}`
+                      : "/default-profile.png"
+                  }
+                  alt={p.name}
+                  className="w-12 h-12 rounded-full border-2 border-white shadow-md"
+                />
+                <div className="bg-black text-xs px-2 py-1 rounded-md shadow-md mt-1 text-center text-white leading-tight">
+                  <strong className="block">{p.name}</strong>
+                  <div>⭐{Number(p.rating || 0).toFixed(1)}</div>
+                  <div className="italic text-gray-300">{p.category || "N/A"}</div>
+                </div>
+              </div>
+            </OverlayView>
+          ))}
+
+          {/* User location */}
+          {currentUserLocation && (
+            <>
+              <Marker
+                position={currentUserLocation}
+                icon={{ url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png" }}
+              />
+              <OverlayView
+                position={currentUserLocation}
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                getPixelPositionOffset={() => ({ x: 0, y: -52 })}
+              >
+                <div className="absolute left-1/2 -translate-x-1/2 text-blue-600 text-sm font-semibold bg-white px-3 py-0.5 rounded-md shadow-md pointer-events-none whitespace-nowrap text-center">
+                  You
+                </div>
+              </OverlayView>
+            </>
+          )}
+        </GoogleMap>
+      </LoadScript>
     </Card>
   );
 };
