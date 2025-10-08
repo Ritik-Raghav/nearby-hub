@@ -93,9 +93,9 @@ export const ServiceCard = ({
             >
               View Details
             </Button>
-            <Button size="sm" variant="outline" className="flex-1">
+            {/* <Button size="sm" variant="outline" className="flex-1">
               Call Now
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
