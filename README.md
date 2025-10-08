@@ -1,73 +1,141 @@
-# Welcome to your Lovable project
+# ![LocalFinder Logo](https://via.placeholder.com/30) LocalFinder Frontend
 
-## Project info
+[![React](https://img.shields.io/badge/React-18-blue?logo=react)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.3-blue?logo=tailwind-css)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-**URL**: https://lovable.dev/projects/13519e5f-3a07-4b62-9035-ba010ea48a11
+LocalFinder is a web application that helps users discover and connect with local service providers in their area. This **frontend** is built with **React**, **Tailwind CSS**, and **Google Maps API**, offering an interactive and user-friendly experience.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🌟 Features
 
-**Use Lovable**
+* **Interactive Map View**: See service providers on a map with markers.
+* **Provider Profiles**: View detailed info, ratings, and contact details.
+* **Search & Filters**: Quickly find providers by name, category, or location.
+* **User Authentication**: Sign up, log in, and manage your account.
+* **Ratings & Reviews**: Submit and view provider reviews.
+* **Responsive Design**: Works on both desktop and mobile devices.
+* **Real-time Data Fetch**: Get the latest provider info from the backend API.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/13519e5f-3a07-4b62-9035-ba010ea48a11) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🖥️ Screenshots
 
-**Use your preferred IDE**
+**Home Map View**
+![Home Map View](https://via.placeholder.com/600x350?text=Map+View)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+**Provider Profile**
+![Provider Profile](https://via.placeholder.com/600x350?text=Provider+Profile)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**Search & Filters**
+![Search Filters](https://via.placeholder.com/600x350?text=Search+Filters)
 
-Follow these steps:
+> Replace placeholder images with real screenshots from your app for better presentation.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🛠️ Tech Stack
 
-# Step 3: Install the necessary dependencies.
-npm i
+* **Frontend**: React, Tailwind CSS, React Router, Axios
+* **Map Integration**: Google Maps API (or alternative map library)
+* **State Management**: React Context API / useState / useReducer
+* **HTTP Client**: Axios
+* **Environment Variables**: `.env` for API URLs and keys
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+---
+
+## 📂 Project Structure
+
+```
+localfinder-frontend/
+├─ public/
+│  ├─ index.html
+│  └─ assets/
+├─ src/
+│  ├─ components/       # Reusable components (Map, Navbar, Cards)
+│  ├─ pages/            # Pages (Home, Provider Details, Login, Register)
+│  ├─ services/         # Axios API calls
+│  ├─ context/          # React Context for global state
+│  ├─ App.jsx
+│  └─ main.jsx
+├─ .env.example
+├─ package.json
+└─ tailwind.config.js
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## ⚡ Getting Started (Run Locally)
 
-**Use GitHub Codespaces**
+### 1. Clone the repository
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+git clone https://github.com/your-username/localfinder-frontend.git
+cd localfinder-frontend
+```
 
-## What technologies are used for this project?
+### 2. Install dependencies
 
-This project is built with:
+```bash
+npm install
+# or
+yarn install
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### 3. Set up environment variables
 
-## How can I deploy this project?
+Create a `.env` file in the root folder based on `.env.example`:
 
-Simply open [Lovable](https://lovable.dev/projects/13519e5f-3a07-4b62-9035-ba010ea48a11) and click on Share -> Publish.
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+```
 
-## Can I connect a custom domain to my Lovable project?
+> Replace the API URL with your backend URL and add your Google Maps API key.
 
-Yes, you can!
+### 4. Run the frontend
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The app will be accessible at `http://localhost:5173`.
+
+### 5. Build for production
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+The build output will be in the `dist/` folder, ready for deployment.
+
+---
+
+## 📌 Notes
+
+* Ensure the **backend API** is running and accessible.
+* Images and provider data are fetched from the backend via Axios.
+* Enable the **Maps JavaScript API** and **Places API** in your Google Cloud account for map functionality.
+
+---
+
+## 🚀 Future Improvements
+
+* Real-time chat with providers
+* Advanced filtering and sorting
+* Dark mode theme
+* Progressive Web App (PWA) support
+
+---
+
+## ✉️ Author
+
+**Ritik Raghav**
+
+* GitHub: [https://github.com/your-username](https://github.com/your-username)
+* Email: [your-email@example.com](mailto:your-email@example.com)
