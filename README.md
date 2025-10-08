@@ -1,4 +1,4 @@
-# ![LocalFinder Logo](https://via.placeholder.com/30) LocalFinder Frontend
+ LocalFinder Frontend
 
 [![React](https://img.shields.io/badge/React-18-blue?logo=react)](https://reactjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.3-blue?logo=tailwind-css)](https://tailwindcss.com/)
@@ -17,21 +17,6 @@ LocalFinder is a web application that helps users discover and connect with loca
 * **Ratings & Reviews**: Submit and view provider reviews.
 * **Responsive Design**: Works on both desktop and mobile devices.
 * **Real-time Data Fetch**: Get the latest provider info from the backend API.
-
----
-
-## 🖥️ Screenshots
-
-**Home Map View**
-![Home Map View](https://via.placeholder.com/600x350?text=Map+View)
-
-**Provider Profile**
-![Provider Profile](https://via.placeholder.com/600x350?text=Provider+Profile)
-
-**Search & Filters**
-![Search Filters](https://via.placeholder.com/600x350?text=Search+Filters)
-
-> Replace placeholder images with real screenshots from your app for better presentation.
 
 ---
 
@@ -71,8 +56,8 @@ localfinder-frontend/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/localfinder-frontend.git
-cd localfinder-frontend
+git clone https://github.com/Ritik-Raghav/nearby-hub.git
+cd nearby-hub
 ```
 
 ### 2. Install dependencies
@@ -102,7 +87,7 @@ npm run dev
 yarn dev
 ```
 
-The app will be accessible at `http://localhost:5173`.
+The app will be accessible at `http://localhost:8080`.
 
 ### 5. Build for production
 
@@ -137,5 +122,5 @@ The build output will be in the `dist/` folder, ready for deployment.
 
 **Ritik Raghav**
 
-* GitHub: [https://github.com/your-username](https://github.com/your-username)
-* Email: [your-email@example.com](mailto:your-email@example.com)
+* GitHub: [https://github.com/Ritik-Raghav](https://github.com/Ritik-Raghav)
+* Email: [ritikrghv313@gmail.com](mailto:ritikrghv313@gmail.com)
