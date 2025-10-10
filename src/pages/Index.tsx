@@ -188,8 +188,8 @@ const Index = () => {
                 </div>
                 <div className="space-y-4">
                   {providers.length > 0 ? (
-                    providers.map((service: any, idx) => (
-                      <ServiceCard key={idx} {...service} onViewDetails={handleViewDetails} />
+                    providers.map((service: any) => (
+                      <ServiceCard key={service._id || service.id || service.name} {...service} onViewDetails={handleViewDetails} />
                     ))
                   ) : (
                     <p className="text-muted-foreground">No providers found.</p>
@@ -257,11 +257,21 @@ const Index = () => {
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.message || "Failed to submit rating");
 
-                // Update local state to reflect new rating
+                // Update local state to reflect new rating in dialog
                 setSelectedProvider((prev: any) => ({
                   ...prev,
                   rating: data.rating,
                 }));
+
+                // Also update the providers list so the main list shows the new rating immediately
+                setProviders((prevProviders: any[]) =>
+                  prevProviders.map((p) =>
+                    (p._id || p.id) === (selectedProvider._id || selectedProvider.id)
+                      ? { ...p, rating: data.rating }
+                      : p
+                  )
+                );
+               
               } catch (err) {
                 console.error("Failed to submit rating:", err);
                 alert("Failed to submit rating. Please try again.");

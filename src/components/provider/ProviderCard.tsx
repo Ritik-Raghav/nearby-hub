@@ -21,8 +21,8 @@ export const ProviderCard = ({ provider }) => {
           <p className="text-sm text-gray-400 mt-1 truncate max-w-md">{provider.address}</p>
         </div>
 
-        <Badge className="text-sm px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-md">
-          ⭐ {provider.rating?.toFixed(1) || "0.0"}
+            <Badge className="text-sm px-3 py-1 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-md">
+              \u2b50 {provider.rating != null ? Number(provider.rating).toFixed(1) : "0.0"}
         </Badge>
       </div>
 

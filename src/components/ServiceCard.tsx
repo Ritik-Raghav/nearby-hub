@@ -63,7 +63,7 @@ export const ServiceCard = ({
             </div>
             <div className="flex items-center gap-1 bg-accent/10 px-2 py-1 rounded-lg">
               <Star className="h-4 w-4 fill-accent text-accent" />
-              <span className="font-medium text-sm">{rating}</span>
+              <span className="font-medium text-sm">{Number(rating).toFixed(1)}</span>
               {/* <span className="text-xs text-muted-foreground">({reviews})</span> */}
             </div>
           </div>
